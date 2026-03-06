@@ -14,26 +14,19 @@ Code generation is largely solved — given a well-scoped task, modern agents pr
 
 ## Two phases of review
 
-### Pre-PR review (internal review)
+Code review happens twice — before and after PR submission. Both phases run the same review sub-agents. See [agent-architecture.md](agent-architecture.md) for the full two-phase model and how it interacts with the trust model.
 
-Before an implementation agent even opens a PR, can we catch problems early?
+### Phase 1: Pre-PR review (shift left)
 
-- Does the implementation match the intent of the issue?
-- Are there obvious bugs, missing edge cases, or security issues?
-- Does it follow the repo's patterns and conventions?
-- Are the tests adequate?
+Before the implementation agent commits or opens a PR, it invokes the review sub-agents locally. This catches problems before they consume attention at the PR level. The implementation agent iterates on its own work — fixing issues, improving test coverage, addressing security concerns — before exposing the change to the broader system.
 
-This is potentially more impactful than post-PR review because it catches problems before they consume reviewer attention.
+This is a normal pattern for humans using coding agents today. It produces higher quality output faster and wastes fewer resources.
 
-### Post-PR review (formal review)
+### Phase 2: PR-level review (the actual gate)
 
-The PR is open. Review agents evaluate it.
+The PR is open. Review sub-agents evaluate it with no special trust granted because the code came from an implementation agent that already ran pre-PR review. The PR-level review is a fully independent evaluation — not a rubber stamp of Phase 1.
 
-- Correctness: does it do what it claims?
-- Security: does it introduce vulnerabilities?
-- Intent alignment: does it address the right problem?
-- Test coverage: are the changes tested?
-- Style/conventions: does it follow the repo's patterns?
+The review process is identical whether the PR author is an agent or a human. The review agents don't know or care about authorship. They evaluate:
 
 ## Why review must be decomposed into sub-agents
 
